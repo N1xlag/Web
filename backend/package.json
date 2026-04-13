@@ -1,22 +1,23 @@
 {
-  "name": "backend",
+  "name": "techdrops-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "API REST para TechDrops Bolivia - Sistema de preventas",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "db:migrate": "npx prisma migrate dev --name init",
+    "db:seed": "node src/seed.js",
+    "db:studio": "npx prisma studio"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "@prisma/client": "^5.22.0",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
   },
   "devDependencies": {
+    "nodemon": "^3.1.4",
     "prisma": "^5.22.0"
   }
 }

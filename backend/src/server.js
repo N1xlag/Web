@@ -1,22 +1,43 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { PrismaClient } = require('@prisma/client');
-require('dotenv').config();
+const reservaRoutes = require('./routes/reservaRoutes');
 
 const app = express();
-const prisma = new PrismaClient();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
-// Middlewares básicos
-app.use(cors());
+// ─── Middlewares ───────────────────────────────────────────────────────────────
+app.use(cors({
+  origin: [
+    'http://localhost:5173', // Dev (Vite)
+    'http://localhost:3000',
+    // Agrega tu dominio de producción aquí cuando lo tengas
+    // 'https://techdrops.bo'
+  ],
+  methods: ['GET', 'POST'],
+}));
 app.use(express.json());
 
-// Ruta de prueba para confirmar que está vivo
-app.get('/api/estado', (req, res) => {
-  res.json({ mensaje: 'Servidor de preventas funcionando al 100%' });
+// ─── Rutas ─────────────────────────────────────────────────────────────────────
+app.use('/api', reservaRoutes);
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Encender el servidor
+// ─── 404 Handler ───────────────────────────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({ error: 'Ruta no encontrada' });
+});
+
+// ─── Error Handler global ──────────────────────────────────────────────────────
+app.use((err, req, res, next) => {
+  console.error('❌ Error no manejado:', err.message);
+  res.status(500).json({ error: 'Error interno del servidor' });
+});
+
+// ─── Inicio ────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`🚀 TechDrops API corriendo en http://localhost:${PORT}`);
 });

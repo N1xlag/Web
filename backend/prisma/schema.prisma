@@ -1,10 +1,21 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+model Producto {
+  id        Int       @id @default(autoincrement())
+  nombre    String
+  slug      String    @unique
+  precio    Float
+  anticipo  Float     @default(50)
+  stock     Int       @default(0)
+  reservas  Reserva[]
+  createdAt DateTime  @default(now())
 }
 
 model Cliente {
@@ -12,25 +23,21 @@ model Cliente {
   nombre    String
   telefono  String    @unique
   reservas  Reserva[]
-  creadoEn  DateTime  @default(now())
-}
-
-model Producto {
-  id          Int       @id @default(autoincrement())
-  nombre      String
-  precioVenta Float
-  reservas    Reserva[]
+  createdAt DateTime  @default(now())
 }
 
 model Reserva {
-  id          Int      @id @default(autoincrement())
-  clienteId   Int
-  productoId  Int
-  cantidad    Int      @default(1)
-  montoAbono  Float
-  estado      String   @default("PENDIENTE")
-  fecha       DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  cliente    Cliente  @relation(fields: [clienteId], references: [id])
+  clienteId  Int
+  producto   Producto @relation(fields: [productoId], references: [id])
+  productoId Int
+  estado     Estado   @default(PENDIENTE)
+  createdAt  DateTime @default(now())
+}
 
-  cliente     Cliente  @relation(fields: [clienteId], references: [id])
-  producto    Producto @relation(fields: [productoId], references: [id])
+enum Estado {
+  PENDIENTE
+  PAGADO
+  CANCELADO
 }
