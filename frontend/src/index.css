@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: #F7F5F0;
+    color: #111111;
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #F7F5F0; }
+  ::-webkit-scrollbar-thumb { background: #DEDBD5; }
+  ::-webkit-scrollbar-thumb:hover { background: #111; }
+}
+
+@layer components {
+  /* ─── Etiqueta uppercase pequeña ─── */
+  .label-xs {
+    @apply font-body text-[10px] tracking-[0.25em] uppercase text-ink-3;
+  }
+
+  /* ─── Botón principal negro ─── */
+  .btn-black {
+    @apply bg-ink text-paper font-body text-[11px] tracking-[0.15em] uppercase px-8 py-4
+           transition-colors duration-200 hover:bg-ink-2 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  /* ─── Botón outline ─── */
+  .btn-outline {
+    @apply border border-ink text-ink font-body text-[11px] tracking-[0.15em] uppercase px-6 py-3
+           transition-colors duration-200 hover:bg-ink hover:text-paper;
+  }
+
+  /* ─── Línea separadora con etiqueta ─── */
+  .rule-label {
+    @apply flex items-center gap-4 text-[10px] tracking-[0.25em] uppercase text-ink-3;
+  }
+  .rule-label::before,
+  .rule-label::after {
+    content: '';
+    @apply flex-1 h-px bg-border;
+  }
+
+  /* ─── Badge de urgencia ─── */
+  .badge-urgency {
+    @apply inline-flex items-center gap-1.5 font-body text-[9px] tracking-[0.2em] uppercase
+           text-danger border border-danger/40 px-2.5 py-1;
+  }
+}
