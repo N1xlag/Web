@@ -12,12 +12,7 @@ const rateLimit = require('express-rate-limit');
 // ─── Middlewares ───────────────────────────────────────────────────────────────
 app.use(helmet());
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    // Agrega tu dominio de producción aquí cuando lo tengas
-    // 'https://techdrops.bo'
-  ],
+  origin: '*',
   methods: ['GET', 'POST'],
 }));
 app.use(express.json());
