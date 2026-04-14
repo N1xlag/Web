@@ -1,54 +1,42 @@
-require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Seeding NovaTech Bolivia...');
+  console.log('Iniciando la carga de productos a Supabase...');
+  
+  await prisma.producto.createMany({
+    data: [
+      { 
+        nombre: 'Smart Glasses HD', 
+        slug: 'smart-glasses-hd', 
+        precio: 0, 
+        anticipo: 50, 
+        stock: 100 // Pon la cantidad real que te llegará de China
+      },
+      { 
+        nombre: 'Powerbank Térmico', 
+        slug: 'powerbank-termico', 
+        precio: 0, 
+        anticipo: 50, 
+        stock: 100 
+      },
+      { 
+        nombre: 'Kit Premium Primeros Auxilios Auto', 
+        slug: 'kit-primeros-auxilios-auto', 
+        precio: 0, 
+        anticipo: 50, 
+        stock: 100 
+      },
+    ],
+    skipDuplicates: true, // Por si lo ejecutas dos veces por error
+  });
 
-  // Limpiar productos existentes (cuidado en producción)
-  await prisma.reserva.deleteMany(); 
-  await prisma.cliente.deleteMany(); 
-  await prisma.producto.deleteMany();
-
-  const productos = [
-    {
-      nombre: 'Smart Glasses HD',
-      slug: 'smart-glasses-hd',
-      precio: 350,
-      anticipo: 50,
-      stock: 12,
-    },
-    {
-      nombre: 'Powerbank Térmico',
-      slug: 'powerbank-termico',
-      precio: 180,
-      anticipo: 50,
-      stock: 8,
-    },
-    {
-      nombre: 'Kit Premium Primeros Auxilios Auto',
-      slug: 'kit-primeros-auxilios-auto',
-      precio: 220,
-      anticipo: 50,
-      stock: 5,
-    },
-  ];
-
-  for (const producto of productos) {
-    await prisma.producto.upsert({
-      where: { slug: producto.slug },
-      update: producto,
-      create: producto,
-    });
-    console.log(`  ✅ ${producto.nombre} (stock: ${producto.stock})`);
-  }
-
-  console.log('\n🚀 Seed completado. Productos listos en la BD.');
+  console.log('✅ ¡Inventario inicial cargado con éxito!');
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('❌ Error cargando los datos:', e);
     process.exit(1);
   })
   .finally(async () => {

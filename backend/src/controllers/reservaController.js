@@ -94,7 +94,7 @@ try {
       // 2. Upsert del cliente
        const cliente = await tx.cliente.upsert({
         where: { telefono: telefonoLimpio },
-        update: { nombre },
+        update: {},
         create: { nombre, telefono: telefonoLimpio },
       });
 

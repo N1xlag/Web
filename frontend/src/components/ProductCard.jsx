@@ -85,7 +85,7 @@ export default function ProductCard({ producto, onReservar }) {
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="font-body text-[9px] tracking-[0.2em] uppercase text-ink-3">
-              {NUMEROS[slug]} — {ETIQUETAS[slug]}
+              {NUMEROS[slug] || 'NEW'} — {ETIQUETAS[slug] || 'Tech'}
             </span>
             {pocoStock && (
               <span className="badge-urgency">
@@ -101,7 +101,7 @@ export default function ProductCard({ producto, onReservar }) {
 
         {/* Descripción */}
         <p className="font-body text-sm text-ink-2 leading-relaxed flex-1">
-          {DESCRIPCIONES[slug]}
+          {DESCRIPCIONES[slug] || 'Producto de importación directa de alta calidad.'}
         </p>
 
         {/* Barra de stock */}
