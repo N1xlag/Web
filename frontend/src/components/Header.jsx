@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const FECHA_LLEGADA = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
+const FECHA_LLEGADA = new Date('2026-05-20T00:00:00-04:00');
 
 function useCountdown(target) {
   const calc = () => {
@@ -48,7 +48,7 @@ export default function Header() {
             </div>
             <div>
               <span className="font-display text-xl font-medium tracking-widest uppercase">
-                TechDrops
+                NovaTech
               </span>
               <span className="font-body text-[9px] tracking-[0.25em] text-ink-3 uppercase block leading-none mt-0.5">
                 Bolivia · Drop 001
@@ -58,13 +58,19 @@ export default function Header() {
 
           {/* Nav */}
           <nav className="hidden md:flex items-center gap-8">
-            {['Catálogo', 'Preventa', 'Contacto'].map((item) => (
+            {[
+              { label: 'Catálogo',  href: '#productos' },
+              { label: 'Preventa',  href: '#como-funciona' },
+              { label: 'Contacto',  href: `https://wa.me/${import.meta.env.VITE_WSP_ADMIN || '59170000000'}` },
+            ].map((item) => (
               <a
-                key={item}
-                href="#productos"
+                key={item.label}
+                href={item.href}
+                target={item.href.startsWith('http') ? '_blank' : undefined}
+                rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                 className="font-body text-[11px] tracking-[0.12em] uppercase text-ink-2 hover:text-ink transition-colors"
               >
-                {item}
+                {item.label}
               </a>
             ))}
             <a

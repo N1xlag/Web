@@ -3,9 +3,11 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Seeding TechDrops Bolivia...');
+  console.log('🌱 Seeding NovaTech Bolivia...');
 
   // Limpiar productos existentes (cuidado en producción)
+  await prisma.reserva.deleteMany(); 
+  await prisma.cliente.deleteMany(); 
   await prisma.producto.deleteMany();
 
   const productos = [

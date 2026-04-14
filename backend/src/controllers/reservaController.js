@@ -44,61 +44,92 @@ const crearReserva = async (req, res) => {
   const { nombre, telefono, productoId } = req.body;
 
   // Validaciones básicas
-  if (!nombre || !telefono || !productoId) {
+   if (!nombre || !telefono || !productoId) {
     return res.status(400).json({
       error: 'Faltan datos requeridos: nombre, telefono y productoId son obligatorios.',
     });
   }
 
-  const telefonoLimpio = telefono.replace(/\D/g, ''); // Solo números
+  // Validar que nombre no sea demasiado corto ni largo
+  if (nombre.trim().length < 2 || nombre.trim().length > 100) {
+    return res.status(400).json({ error: 'El nombre debe tener entre 2 y 100 caracteres.' });
+  }
+
+  // Validar que productoId sea un número entero válido
+  const productoIdNum = parseInt(productoId, 10);
+  if (isNaN(productoIdNum) || productoIdNum <= 0) {
+    return res.status(400).json({ error: 'productoId inválido.' });
+  }
+
+  const telefonoLimpio = telefono.replace(/\D/g, '');
   if (telefonoLimpio.length < 7) {
     return res.status(400).json({ error: 'Número de teléfono inválido.' });
   }
 
-  try {
-    // 1. Verificar que el producto existe y tiene stock
-    const producto = await prisma.producto.findUnique({
-      where: { id: Number(productoId) },
-      include: {
-        _count: {
-          select: {
-            reservas: {
-              where: { estado: { in: ['PENDIENTE', 'PAGADO'] } },
+try {
+    const resultado = await prisma.$transaction(async (tx) => {
+      // 1. Verificar producto y stock DENTRO de la transacción
+      const producto = await tx.producto.findUnique({
+        where: { id: productoIdNum },
+        include: {
+          _count: {
+            select: {
+              reservas: {
+                where: { estado: { in: ['PENDIENTE', 'PAGADO'] } },
+              },
             },
           },
         },
-      },
-    });
-
-    if (!producto) {
-      return res.status(404).json({ error: 'Producto no encontrado.' });
-    }
-
-    const stockDisponible = producto.stock - producto._count.reservas;
-    if (stockDisponible <= 0) {
-      return res.status(409).json({
-        error: 'Lo sentimos, este producto ya no tiene unidades disponibles.',
       });
+
+      if (!producto) {
+        throw { status: 404, mensaje: 'Producto no encontrado.' };
+      }
+
+      const stockDisponible = producto.stock - producto._count.reservas;
+      if (stockDisponible <= 0) {
+        throw { status: 409, mensaje: 'Lo sentimos, este producto ya no tiene unidades disponibles.' };
+      }
+
+      // 2. Upsert del cliente
+       const cliente = await tx.cliente.upsert({
+        where: { telefono: telefonoLimpio },
+        update: { nombre },
+        create: { nombre, telefono: telefonoLimpio },
+      });
+
+      // 3. Verificar que no tenga ya una reserva activa para este producto
+      const reservaExistente = await tx.reserva.findFirst({
+        where: {
+          clienteId: cliente.id,
+          productoId: producto.id,
+          estado: { in: ['PENDIENTE', 'PAGADO'] },
+        },
+      });
+
+      if (reservaExistente) {
+        throw { status: 409, mensaje: 'Ya tenés una reserva activa para este producto.' };
+      }
+
+      // 4. Crear la reserva
+      const reserva = await tx.reserva.create({
+        data: {
+          clienteId: cliente.id,
+          productoId: producto.id,
+          estado: 'PENDIENTE',
+        },
+      });
+
+      return { producto, cliente, reserva };
+    });
+
+    // 4. Construir el mensaje de WhatsApp (fuera de la transacción)
+    const { producto, cliente, reserva } = resultado;
+    const wspNumber = process.env.WSP_ADMIN_NUMBER;
+    if (!wspNumber) {
+      console.error('❌ WSP_ADMIN_NUMBER no está configurado en .env');
+      return res.status(500).json({ error: 'Error de configuración del servidor.' });
     }
-
-    // 2. Upsert del cliente (buscar por teléfono, crear si no existe)
-    const cliente = await prisma.cliente.upsert({
-      where: { telefono: telefonoLimpio },
-      update: { nombre }, // Actualiza el nombre si ya existía
-      create: { nombre, telefono: telefonoLimpio },
-    });
-
-    // 3. Crear la reserva
-    const reserva = await prisma.reserva.create({
-      data: {
-        clienteId: cliente.id,
-        productoId: producto.id,
-        estado: 'PENDIENTE',
-      },
-    });
-
-    // 4. Construir el mensaje de WhatsApp pre-llenado
-    const wspNumber = process.env.WSP_ADMIN_NUMBER || '59170000000';
     const mensaje = encodeURIComponent(
       `Hola, acabo de reservar *${producto.nombre}* a nombre de *${cliente.nombre}*. ¿A qué QR transfiero el anticipo de ${producto.anticipo} Bs?`
     );
@@ -110,12 +141,15 @@ const crearReserva = async (req, res) => {
       reservaId: reserva.id,
       producto: producto.nombre,
       anticipo: producto.anticipo,
-      wspUrl, // El frontend usa esto para redirigir
+      wspUrl,
     });
   } catch (error) {
+    if (error.status) {
+      return res.status(error.status).json({ error: error.mensaje });
+    }
     console.error('❌ Error en crearReserva:', error.message);
     res.status(500).json({ error: 'No se pudo procesar tu reserva. Intenta de nuevo.' });
   }
 };
 
-module.exports = { crearReserva, obtenerProductos };
+module.exports = { crearReserva, obtenerProductos, prisma };

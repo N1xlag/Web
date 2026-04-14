@@ -24,11 +24,11 @@ const ICONOS = {
 
 const DESCRIPCIONES = {
   'smart-glasses-hd':
-    'Cámara HD integrada. Hasta 2h de grabación continua. El gadget que nadie espera que uses.',
+    'Cámara de 8MP para fotos y video desde tu perspectiva. Incluye traducción IA en tiempo real, música y llamadas Bluetooth. Tu asistente 100% manos libres.',
   'powerbank-termico':
-    '10,000mAh con calefacción instantánea en 3s. Carga y calienta las manos al mismo tiempo.',
+    'Calentador de manos de doble cara y batería externa 2 en 1. Calentamiento rápido para combatir el frío mientras recargas tu celular en cualquier lugar.',
   'kit-primeros-auxilios-auto':
-    '126 piezas. Torniquete, manta térmica, vendas hemostáticas. Para el auto de todos los días.',
+    '',
 };
 
 const NUMEROS = {
@@ -128,7 +128,7 @@ export default function ProductCard({ producto, onReservar }) {
 
         {/* CTA */}
         <button
-          onClick={() => !sinStock && onReservar(producto)}
+          onClick={() => onReservar(producto)}
           disabled={sinStock}
           className="btn-black w-full"
         >
