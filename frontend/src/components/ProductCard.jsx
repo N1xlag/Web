@@ -28,7 +28,7 @@ const DESCRIPCIONES = {
   'powerbank-termico':
     'Calentador de manos de doble cara y batería externa 2 en 1. Calentamiento rápido para combatir el frío mientras recargas tu celular en cualquier lugar.',
   'kit-primeros-auxilios-auto':
-    '',
+    'Kit completo y compacto para el vehículo. Herramientas de emergencia, vendajes y todo lo necesario para cualquier imprevisto en la ruta.',
 };
 
 const NUMEROS = {
@@ -48,7 +48,7 @@ function StockBar({ disponible, total }) {
   const baja = pct <= 40;
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2 mt-2">
       <div className="flex justify-between items-center">
         <span className="font-body text-[9px] tracking-[0.2em] uppercase text-ink-3">
           Disponibilidad
@@ -57,9 +57,9 @@ function StockBar({ disponible, total }) {
           {disponible} / {total}
         </span>
       </div>
-      <div className="h-px bg-border">
+      <div className="h-1 bg-paper rounded-full overflow-hidden">
         <div
-          className={`h-px transition-all duration-700 ${baja ? 'bg-danger' : 'bg-ink'}`}
+          className={`h-full rounded-full transition-all duration-700 ${baja ? 'bg-danger' : 'bg-ink'}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -73,22 +73,22 @@ export default function ProductCard({ producto, onReservar }) {
   const pocoStock = !sinStock && stockDisponible <= 3;
 
   return (
-    <article className="bg-paper border-r border-b border-border flex flex-col hover:bg-white transition-colors duration-200">
+    <article className="bg-white rounded-2xl shadow-sm hover:shadow-md flex flex-col transition-all duration-300 overflow-hidden">
       {/* Zona del ícono */}
-      <div className="h-36 flex items-center justify-center border-b border-border">
+      <div className="h-40 flex items-center justify-center bg-paper/50">
         {ICONOS[slug]}
       </div>
 
       {/* Contenido */}
-      <div className="flex flex-col flex-1 p-7 gap-5">
+      <div className="flex flex-col flex-1 p-8 gap-5">
         {/* Número + nombre */}
         <div>
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-3">
             <span className="font-body text-[9px] tracking-[0.2em] uppercase text-ink-3">
               {NUMEROS[slug] || 'NEW'} — {ETIQUETAS[slug] || 'Tech'}
             </span>
             {pocoStock && (
-              <span className="badge-urgency">
+              <span className="badge-urgency rounded-md">
                 <span className="w-1.5 h-1.5 rounded-full bg-danger inline-block" />
                 Solo {stockDisponible}
               </span>
@@ -108,7 +108,7 @@ export default function ProductCard({ producto, onReservar }) {
         <StockBar disponible={stockDisponible} total={stockTotal} />
 
         {/* Precios */}
-        <div className="flex items-end justify-between pt-4 border-t border-border">
+        <div className="flex items-end justify-between pt-6 mt-2">
           <div>
             <span className="font-body text-[9px] tracking-[0.2em] uppercase text-ink-3 block mb-1">
               Precio final
@@ -130,7 +130,7 @@ export default function ProductCard({ producto, onReservar }) {
         <button
           onClick={() => onReservar(producto)}
           disabled={sinStock}
-          className="btn-black w-full"
+          className="btn-black rounded-lg w-full mt-4"
         >
           {sinStock ? 'Sin disponibilidad' : 'Reservar unidad'}
         </button>

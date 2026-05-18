@@ -1,5 +1,5 @@
 const WSP_NUMBER = import.meta.env.VITE_WSP_ADMIN || '59175467473';
-const WSP_MSG = encodeURIComponent('Hola, quiero más información sobre la preventa de NovaTech Bolivia.');
+const WSP_MSG = encodeURIComponent('Hola, quiero más información sobre la preventa de Supply Bolivia.');
 
 export default function WspButton() {
   return (
