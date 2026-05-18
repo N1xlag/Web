@@ -354,7 +354,7 @@ function PedidoAMedida() {
 ───────────────────────────────────────────────────────────────────────────── */
 const EQUIPO = [
   {
-    nombre: 'Tu Nombre', // Rellenar
+    nombre: 'Nombre 1', // Rellenar
     rol: 'Fundador & Importador',
     bio: 'Supervisa las operaciones generales y asegura las alianzas clave en origen.', // Rellenar
     iniciales: 'CEO',
