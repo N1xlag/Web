@@ -56,7 +56,7 @@ export default function Header() {
             </div>
             <div>
               <span className="font-display text-xl font-medium tracking-widest uppercase">
-                Importex
+                pasocero
               </span>
               <span className="font-body text-[9px] tracking-[0.25em] text-ink-3 uppercase block leading-none mt-0.5">
                 Bolivia · Importación Directa

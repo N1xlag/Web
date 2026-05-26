@@ -261,7 +261,7 @@ function Categorias() {
 ───────────────────────────────────────────────────────────────────────────── */
 function PedidoAMedida() {
   const wspMsg = encodeURIComponent(
-    'Hola Importex! Quiero cotizar un pedido a medida. El producto que busco es: [describír acá]'
+    'Hola pasocero! Quiero cotizar un pedido a medida. El producto que busco es: [describír acá]'
   );
   const wspUrl = `https://wa.me/${WSP_ADMIN}?text=${wspMsg}`;
 
@@ -448,7 +448,7 @@ function Garantia() {
     <section>
       <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col md:flex-row items-center justify-between gap-12">
         <div className="max-w-lg">
-          <span className="label-xs block mb-4">¿Por qué confiar en Importex?</span>
+          <span className="label-xs block mb-4">¿Por qué confiar en pasocero?</span>
           <p className="font-display text-3xl font-medium leading-snug">
             Operamos con total transparencia. Si hay algún inconveniente,{' '}
             <em className="font-light italic text-ink-3">devolvemos el anticipo sin preguntas.</em>
@@ -490,7 +490,7 @@ function Footer() {
             <div className="w-6 h-6 rounded-full bg-ink flex items-center justify-center">
               <div className="w-2 h-2 rounded-full bg-paper" />
             </div>
-            <span className="font-display text-lg font-medium tracking-widest uppercase">Importex</span>
+            <span className="font-display text-lg font-medium tracking-widest uppercase">pasocero</span>
           </div>
           <p className="font-body text-xs text-ink-3 leading-relaxed max-w-xs">
             Importación directa desde China a Bolivia. Drops periódicos y pedidos personalizados.
@@ -548,7 +548,7 @@ function Footer() {
       <div className="border-t border-border/30">
         <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <span className="font-body text-xs text-ink-3">
-            © {new Date().getFullYear()} Importex Bolivia — Todos los derechos reservados
+            © {new Date().getFullYear()} pasocero Bolivia — Todos los derechos reservados
           </span>
           <span className="font-body text-xs text-ink-3">Cochabamba, Bolivia</span>
         </div>
